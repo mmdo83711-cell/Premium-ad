@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>নতুন অ্যাপ যোগ করুন - প্রিমিয়াম অ্যাপস</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h2>প্রিমিয়াম অ্যাপস</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>ড্যাশবোর্ড</span>
+                </a>
+            </li>
+            <li>
+                <a href="ads.html">
+                    <i class="fas fa-ad"></i>
+                    <span>এডস ম্যানেজমেন্ট</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="#" id="appsManagement">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>অ্যাপস ম্যানেজমেন্ট</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <ul class="submenu" style="display: block;">
+                    <li class="active"><a href="add-app.html"><i class="fas fa-plus-circle"></i> নতুন অ্যাপ যোগ</a></li>
+                    <li><a href="#" id="viewApps"><i class="fas fa-list"></i> সব অ্যাপ দেখুন</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <h4 id="adminName">অ্যাডমিন</h4>
+                    <p id="adminEmail">admin@example.com</p>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-block" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> লগআউট
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1>নতুন অ্যাপ যোগ করুন</h1>
+                <p class="welcome-message">নতুন প্রিমিয়াম অ্যাপ যুক্ত করুন ইউজার অ্যাপে</p>
+            </div>
+            <div class="header-right">
+                <a href="dashboard.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরে যান
+                </a>
+            </div>
+        </header>
+
+        <!-- Add App Content -->
+        <div class="dashboard-content">
+            <div class="form-container">
+                <form id="addAppForm">
+                    <!-- Basic Info -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-info-circle"></i> বেসিক ইনফরমেশন
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appName">
+                                    <i class="fas fa-heading"></i> অ্যাপ নাম *
+                                </label>
+                                <input type="text" id="appName" placeholder="উদাহরণ: প্রিমিয়াম ভিডিও এডিটর" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appCategory">
+                                    <i class="fas fa-folder"></i> ক্যাটাগরি *
+                                </label>
+                                <select id="appCategory" required>
+                                    <option value="">সিলেক্ট করুন</option>
+                                    <option value="video">ভিডিও</option>
+                                    <option value="photo">ফটো</option>
+                                    <option value="music">মিউজিক</option>
+                                    <option value="productivity">প্রোডাক্টিভিটি</option>
+                                    <option value="tools">টুলস</option>
+                                    <option value="social">সোশ্যাল</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appVersion">
+                                    <i class="fas fa-code-branch"></i> ভার্সন *
+                                </label>
+                                <input type="text" id="appVersion" placeholder="উদাহরণ: 1.0.0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appSize">
+                                    <i class="fas fa-sd-card"></i> সাইজ *
+                                </label>
+                                <input type="text" id="appSize" placeholder="উদাহরণ: 15MB" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appIcon">
+                                    <i class="fas fa-icons"></i> আইকন *
+                                </label>
+                                <select id="appIcon" required>
+                                    <option value="">সিলেক্ট করুন</option>
+                                    <option value="fas fa-video">ভিডিও</option>
+                                    <option value="fas fa-camera">ক্যামেরা</option>
+                                    <option value="fas fa-music">মিউজিক</option>
+                                    <option value="fas fa-file-alt">ডকুমেন্ট</option>
+                                    <option value="fas fa-gamepad">গেম</option>
+                                    <option value="fas fa-paint-brush">ডিজাইন</option>
+                                    <option value="fas fa-chart-line">বিজনেস</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appOrder">
+                                    <i class="fas fa-sort-numeric-down"></i> অর্ডার নাম্বার
+                                </label>
+                                <input type="number" id="appOrder" placeholder="উদাহরণ: 1" min="1">
+                                <p class="form-help">ছোট নাম্বার আগে দেখাবে</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-align-left"></i> ডেসক্রিপশন
+                        </h2>
+                        
+                        <div class="form-group">
+                            <label for="shortDescription">
+                                <i class="fas fa-quote-left"></i> শর্ট ডেসক্রিপশন *
+                            </label>
+                            <textarea id="shortDescription" rows="2" 
+                                      placeholder="সংক্ষিপ্ত বর্ণনা (হোম পেজে দেখাবে)" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fullDescription">
+                                <i class="fas fa-file-alt"></i> ফুল ডেসক্রিপশন *
+                            </label>
+                            <textarea id="fullDescription" rows="4" 
+                                      placeholder="সম্পূর্ণ বর্ণনা (ডিটেইলস পেজে দেখাবে)" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appFeatures">
+                                <i class="fas fa-star"></i> ফিচারস (প্রতি লাইনে একটি)
+                            </label>
+                            <textarea id="appFeatures" rows="4" 
+                                      placeholder="প্রতি লাইনে একটি ফিচার লিখুন
+উদাহরণ: 4K ভিডিও এডিটিং
+অ্যাড-ফ্রি
+নো ওয়াটারমার্ক"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Developer & Stats -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-user-tie"></i> ডেভেলপার এবং স্ট্যাটস
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appDeveloper">
+                                    <i class="fas fa-user"></i> ডেভেলপার নাম
+                                </label>
+                                <input type="text" id="appDeveloper" placeholder="উদাহরণ: প্রিমিয়াম ডেভেলপার্স">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appDownloads">
+                                    <i class="fas fa-download"></i> ডাউনলোড সংখ্যা
+                                </label>
+                                <input type="text" id="appDownloads" placeholder="উদাহরণ: 10K+">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appRating">
+                                    <i class="fas fa-star"></i> রেটিং
+                                </label>
+                                <input type="text" id="appRating" placeholder="উদাহরণ: 4.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastUpdated">
+                                    <i class="fas fa-calendar"></i> সর্বশেষ আপডেট
+                                </label>
+                                <input type="text" id="lastUpdated" placeholder="উদাহরণ: ২০২৪-০১-২০">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App Control -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-cog"></i> অ্যাপ কন্ট্রোল
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="toggle-control">
+                                    <input type="checkbox" id="appLocked">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">অ্যাপ লক করা আছে</span>
+                                </label>
+                                <p class="form-help">ON করলে ইউজাররা ডাউনলোড করতে পারবে না</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="toggle-control">
+                                    <input type="checkbox" id="appPremium" checked>
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">প্রিমিয়াম অ্যাপ</span>
+                                </label>
+                                <p class="form-help">ON করলে প্রিমিয়াম ব্যাজ দেখাবে</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="downloadUrl">
+                                <i class="fas fa-link"></i> ডাউনলোড URL *
+                            </label>
+                            <input type="url" id="downloadUrl" 
+                                   placeholder="https://example.com/app.apk" required>
+                            <p class="form-help">Direct APK ডাউনলোড লিংক দিন</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="previewBtn">
+                            <i class="fas fa-eye"></i> প্রিভিউ
+                        </button>
+                        <button type="submit" class="btn btn-success" id="saveAppBtn">
+                            <i class="fas fa-save"></i> অ্যাপ সেভ করুন
+                        </button>
+                        <button type="button" class="btn btn-danger" id="resetFormBtn">
+                            <i class="fas fa-redo"></i> রিসেট
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- App Preview Modal -->
+    <div id="appPreviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-eye"></i> অ্যাপ প্রিভিউ</h3>
+                <button class="modal-close" id="closePreview">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-app-card" id="appPreviewCard">
+                    <!-- App preview will be generated here -->
+                </div>
+                <div class="preview-app-details" id="appPreviewDetails">
+                    <!-- App details preview will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">লোড হচ্ছে...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="main.js" type="module"></script>
+</body>
+</html>

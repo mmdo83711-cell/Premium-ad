@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এডস ম্যানেজমেন্ট - প্রিমিয়াম অ্যাপস</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h2>প্রিমিয়াম অ্যাপস</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>ড্যাশবোর্ড</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="ads.html">
+                    <i class="fas fa-ad"></i>
+                    <span>এডস ম্যানেজমেন্ট</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" id="appsManagement">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>অ্যাপস ম্যানেজমেন্ট</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="add-app.html"><i class="fas fa-plus-circle"></i> নতুন অ্যাপ যোগ</a></li>
+                    <li><a href="#" id="viewApps"><i class="fas fa-list"></i> সব অ্যাপ দেখুন</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-bell"></i>
+                    <span>নোটিশ কন্ট্রোল</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <h4 id="adminName">অ্যাডমিন</h4>
+                    <p id="adminEmail">admin@example.com</p>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-block" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> লগআউট
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1>এডস ম্যানেজমেন্ট</h1>
+                <p class="welcome-message">Adsterra এডস কন্ট্রোল প্যানেল</p>
+            </div>
+            <div class="header-right">
+                <div class="global-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="globalAdsToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label" id="globalAdsLabel">সব এডস OFF</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Ads Content -->
+        <div class="dashboard-content">
+            <!-- Global Control -->
+            <section class="section card">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-globe"></i> গ্লোবাল এডস কন্ট্রোল
+                    </h2>
+                    <div class="global-status">
+                        <span class="status-badge" id="globalStatusBadge">অফলাইন</span>
+                    </div>
+                </div>
+                
+                <div class="global-controls">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-toggle-on"></i> সব এডস এক্টিভ করুন
+                        </label>
+                        <p class="control-description">সব ধরনের এডস একবারে ON/OFF করুন</p>
+                        <div class="toggle-group">
+                            <button class="btn btn-success" id="enableAllAds">
+                                <i class="fas fa-power-on"></i> সব ON করুন
+                            </button>
+                            <button class="btn btn-danger" id="disableAllAds">
+                                <i class="fas fa-power-off"></i> সব OFF করুন
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-bolt"></i> রিয়েল-টাইম আপডেট
+                        </label>
+                        <p class="control-description">পরিবর্তনগুলো ইউজার অ্যাপে সাথে সাথে দেখা যাবে</p>
+                        <div class="realtime-status">
+                            <span class="status-dot active"></span>
+                            <span>রিয়েল-টাইম সিঙ্ক করা আছে</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Adsterra Scripts -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <i class="fas fa-code"></i> Adsterra এড স্ক্রিপ্টস
+                </h2>
+                <p class="section-subtitle">Adsterra থেকে পাওয়া স্ক্রিপ্টগুলো এখানে পেস্ট করুন</p>
+
+                <div class="ads-scripts-container">
+                    <!-- Banner Ad Script -->
+                    <div class="script-card">
+                        <div class="script-header">
+                            <div class="script-title">
+                                <i class="fas fa-rectangle-ad"></i>
+                                <h3>ব্যানার এড</h3>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="bannerAdToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="script-body">
+                            <div class="form-group">
+                                <label for="bannerScript">
+                                    <i class="fas fa-code"></i> ব্যানার এড স্ক্রিপ্ট
+                                </label>
+                                <textarea id="bannerScript" rows="6" 
+                                          placeholder="Adsterra থেকে পাওয়া ব্যানার এড স্ক্রিপ্ট এখানে পেস্ট করুন..."></textarea>
+                                <p class="form-help">সাইজ: 728×90 বা 320×50 রিকমেন্ডেড</p>
+                            </div>
+
+                            <div class="script-preview">
+                                <h4><i class="fas fa-eye"></i> প্রিভিউ</h4>
+                                <div class="preview-container" id="bannerPreview">
+                                    <!-- Banner ad preview will show here -->
+                                    <p class="preview-placeholder">এড প্রিভিউ এখানে দেখাবে</p>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" id="saveBannerScript">
+                                <i class="fas fa-save"></i> সেভ করুন
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Native Banner Ad Script -->
+                    <div class="script-card">
+                        <div class="script-header">
+                            <div class="script-title">
+                                <i class="fas fa-newspaper"></i>
+                                <h3>নেটিভ ব্যানার এড</h3>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="nativeAdToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="script-body">
+                            <div class="form-group">
+                                <label for="nativeScript">
+                                    <i class="fas fa-code"></i> নেটিভ ব্যানার এড স্ক্রিপ্ট
+                                </label>
+                                <textarea id="nativeScript" rows="6" 
+                                          placeholder="Adsterra থেকে পাওয়া নেটিভ এড স্ক্রিপ্ট এখানে পেস্ট করুন..."></textarea>
+                                <p class="form-help">নেটিভ লুকের জন্য রেসপন্সিভ কোড ব্যবহার করুন</p>
+                            </div>
+
+                            <div class="script-preview">
+                                <h4><i class="fas fa-eye"></i> প্রিভিউ</h4>
+                                <div class="preview-container" id="nativePreview">
+                                    <p class="preview-placeholder">নেটিভ এড প্রিভিউ এখানে দেখাবে</p>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" id="saveNativeScript">
+                                <i class="fas fa-save"></i> সেভ করুন
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Social Bar Ad Script -->
+                    <div class="script-card">
+                        <div class="script-header">
+                            <div class="script-title">
+                                <i class="fas fa-share-alt"></i>
+                                <h3>সোশ্যাল বার এড</h3>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="socialBarAdToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="script-body">
+                            <div class="form-group">
+                                <label for="socialBarScript">
+                                    <i class="fas fa-code"></i> সোশ্যাল বার এড স্ক্রিপ্ট
+                                </label>
+                                <textarea id="socialBarScript" rows="6" 
+                                          placeholder="Adsterra থেকে পাওয়া সোশ্যাল বার এড স্ক্রিপ্ট এখানে পেস্ট করুন..."></textarea>
+                                <p class="form-help">সোশ্যাল শেয়ারিং এবং এড কম্বাইন্ড</p>
+                            </div>
+
+                            <div class="script-preview">
+                                <h4><i class="fas fa-eye"></i> প্রিভিউ</h4>
+                                <div class="preview-container" id="socialBarPreview">
+                                    <p class="preview-placeholder">সোশ্যাল বার প্রিভিউ এখানে দেখাবে</p>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" id="saveSocialBarScript">
+                                <i class="fas fa-save"></i> সেভ করুন
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Interstitial Ad Script -->
+                    <div class="script-card">
+                        <div class="script-header">
+                            <div class="script-title">
+                                <i class="fas fa-expand-alt"></i>
+                                <h3>ইন্টারস্টিশিয়াল এড</h3>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="interstitialAdToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="script-body">
+                            <div class="form-group">
+                                <label for="interstitialScript">
+                                    <i class="fas fa-code"></i> ইন্টারস্টিশিয়াল এড স্ক্রিপ্ট
+                                </label>
+                                <textarea id="interstitialScript" rows="6" 
+                                          placeholder="Adsterra থেকে পাওয়া ইন্টারস্টিশিয়াল এড স্ক্রিপ্ট এখানে পেস্ট করুন..."></textarea>
+                                <p class="form-help">ফুল-স্ক্রিন এড, ডাউনলোড ক্লিকে শো হয়</p>
+                            </div>
+
+                            <button class="btn btn-primary" id="saveInterstitialScript">
+                                <i class="fas fa-save"></i> সেভ করুন
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save All Button -->
+                <div class="save-all-container">
+                    <button class="btn btn-success btn-lg" id="saveAllAds">
+                        <i class="fas fa-save"></i> সব এড সেটিংস সেভ করুন
+                    </button>
+                    <p class="save-all-note">
+                        <i class="fas fa-info-circle"></i>
+                        সব পরিবর্তন Firebase-এ সেভ হবে এবং ইউজার অ্যাপে সাথে সাথে আপডেট হবে
+                    </p>
+                </div>
+            </section>
+
+            <!-- Ad Placement Guide -->
+            <section class="section card">
+                <h2 class="section-title">
+                    <i class="fas fa-map-marker-alt"></i> এড প্লেসমেন্ট গাইড
+                </h2>
+                
+                <div class="placement-guide">
+                    <div class="placement-item">
+                        <div class="placement-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="placement-info">
+                            <h4>হোম পেজ</h4>
+                            <p>ব্যানার এড → অ্যাপস লিস্টের উপরে</p>
+                            <p>নেটিভ ব্যানার → অ্যাপস লিস্টের নিচে</p>
+                        </div>
+                    </div>
+                    
+                    <div class="placement-item">
+                        <div class="placement-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="placement-info">
+                            <h4>ডিটেইলস পেজ</h4>
+                            <p>ব্যানার এড → অ্যাপ ডিটেইলসের উপরে</p>
+                            <p>সোশ্যাল বার → ডাউনলোড বাটনের নিচে</p>
+                        </div>
+                    </div>
+                    
+                    <div class="placement-item">
+                        <div class="placement-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="placement-info">
+                            <h4>ডাউনলোড টাইম</h4>
+                            <p>ইন্টারস্টিশিয়াল → ডাউনলোড ক্লিকে</p>
+                            <p class="text-warning">ইউজার ডাউনলোড ক্লিক করলে দেখাবে</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">লোড হচ্ছে...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="main.js" type="module"></script>
+</body>
+</html>
